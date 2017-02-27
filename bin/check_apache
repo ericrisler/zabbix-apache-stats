@@ -143,17 +143,16 @@ def parse(data, version):
                 continue
             if l.startswith('RestartTime'):
                 continue
+            if l.startswith('TLSSessionCacheStatus'):
+                continue            
             lines.append(l)
         data = "\n".join(lines)
     # Clean out certain chars
     replace = '() '
     csvobj = csv.reader(StringIO.StringIO(data), delimiter = ":", skipinitialspace = True)
     ret = {}
-    breakout = False
     for (key, val) in csvobj:
         if key == 'Scoreboard':
-            # end processing at Scorboard key
-            breakout = True
             sb = {
                 "Waiting for Connection":0,
                 "Starting up":0,
@@ -172,8 +171,6 @@ def parse(data, version):
             ret[key] = sb
         else:
             ret[key] = val
-        if breakout == True:
-       	    break
     ret2 = {}
     for (key, val) in ret.items():
         if key == "Scoreboard":
